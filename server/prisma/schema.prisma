@@ -15,6 +15,7 @@ model User {
     clubs     ClubMember[]
     books     UserBook[]
     comments  Response[]
+    reactions Reaction[]
     createdOn DateTime @default(now())
     updatedOn DateTime @updatedAt
     profile   UserProfile?
@@ -32,6 +33,7 @@ model UserProfile {
 
 model Book {
     id          Int     @id @default(autoincrement())
+    gid         String  
     isbn        String[]
     title       String
     imgUrl      String?
@@ -141,9 +143,12 @@ model Response {
 }
 
 model Reaction {
-    reaction    String      @id
+    id          Int         @id @default(autoincrement())
+    reaction    String      
     Response    Response    @relation(fields: [responseId], references: [id])
     responseId  Int
+    User        User        @relation(fields: [userId], references: [id])
+    userId      String
 }
 
 enum ClubBookStatus {

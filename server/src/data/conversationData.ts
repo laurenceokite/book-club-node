@@ -1,5 +1,5 @@
 import { Prisma, Conversation, Response, Reaction } from "@prisma/client";
-import prisma from "../prisma";
+import prisma from "./prisma";
 
 // -- CREATE --
 async function createConversation(
@@ -27,10 +27,16 @@ async function createResponse(
 }
 
 async function createReaction(
-    data: Prisma.ReactionCreateInput
+    reaction: string,
+    responseId: number,
+    userId: string
 ): Promise<{ success: boolean }> {
     const convoId = await prisma.reaction.create({ 
-        data
+        data: {
+            reaction,
+            responseId,
+            userId
+        }
     });
     return {
         success: true
@@ -91,3 +97,19 @@ async function updateResponse(
     };
 }
 // -- DELETE --
+const deleteConversation = async (id: number): Promise<Conversation> => await prisma.conversation.delete({ where: { id }});
+const deleteResponse = async (id: number): Promise<Response> => await prisma.response.delete({ where: { id }});
+const deleteReaction = async (id: number): Promise<Reaction> => await prisma.reaction.delete({ where: { id }});
+
+export default {
+    createConversation,
+    createResponse,
+    createReaction,
+    getConversationById,
+    getResponseById,
+    updateConversation,
+    updateResponse,
+    deleteConversation,
+    deleteReaction,
+    deleteResponse
+}

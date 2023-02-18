@@ -1,13 +1,9 @@
 import { Router } from "express";
-import bookRoutes from "./books";
-import clubRoutes from "./clubs";
-import userRoutes from "./users";
+import apiRoutes from './api'
 
 const router = Router();
 
-router.use('/books', bookRoutes);
-router.use('/clubs', clubRoutes);
-router.use('/users', userRoutes);
+router.use('/api', apiRoutes)
 
 router.use((req, res) => {
     res.status(404).end();

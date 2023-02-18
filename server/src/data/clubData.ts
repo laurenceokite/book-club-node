@@ -1,5 +1,5 @@
-import { Club, Prisma } from "@prisma/client";
-import prisma from "../prisma";
+import { Club, Meeting, Prisma } from "@prisma/client";
+import prisma from "./prisma";
 
 // --CREATE--
 async function createNewClub(
@@ -7,7 +7,7 @@ async function createNewClub(
     clubName: string, 
     members?: Prisma.ClubMemberCreateManyInput[]
 ): Promise<Club> {
-    const newClub = await prisma.club.create({
+    return await prisma.club.create({
         data: {
             clubName,
             members: {
@@ -20,27 +20,54 @@ async function createNewClub(
                 }
             }
         }
-    });
-    return newClub;
+    }); 
+}
+
+async function createClubMeeting(
+    clubId: string,
+    title: string,
+    time: string,
+    location: string,
+    conversationBody: string,
+    bookId?: number
+):  Promise<Meeting> {
+    const conversation = await prisma.conversation.create({
+        data: {
+            title,
+            clubId,
+            private: true,
+            body: conversationBody
+        }
+    })
+
+    return await prisma.meeting.create({ 
+        data: {
+            clubId,
+            title,
+            time,
+            conversationId: conversation.id,
+            location,
+            bookId
+        }
+     });
 }
 
 // -- READ --
 async function getClubById(
     id: string, 
     include?: Prisma.ClubInclude
-): Promise<Club> {
-    const club = await prisma.club.findUniqueOrThrow({ 
+): Promise<Club | null> {
+    return await prisma.club.findUnique({ 
         where: { id },
         include
     });
-    return club;
 }
 
-async function getManyClubsById(ids: string): Promise<Club[]> {
+async function getManyClubsById(...ids: string[]): Promise<Club[]> {
     const club = await prisma.club.findMany({ 
         where: {
             id: {  
-                in: [ ...ids ]
+                in: ids
             }
         }
     });
@@ -63,14 +90,26 @@ async function updateClub(
     return updatedClub;
 }
 
+async function updateClubMeeting(
+    id: number,
+    data: Prisma.MeetingUpdateInput
+): Promise<Meeting> {
+    return await prisma.meeting.update({
+        where: { id },
+        data
+    });
+}
+
 // -- DELETE -- 
 const deleteClub = async (id: string): Promise<Club> => await prisma.club.delete({ where: { id }});
 
-export {
+export default {
     createNewClub,
     getClubById,
     getManyClubsById,
     getClubByName,
     updateClub,
-    deleteClub
+    deleteClub,
+    createClubMeeting,
+    updateClubMeeting
 } 

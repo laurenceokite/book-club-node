@@ -1,5 +1,5 @@
 import { Prisma, Book } from "@prisma/client";
-import prisma from "../prisma";
+import prisma from "./prisma";
 
 // -- CREATE -- 
 const createBookRecord = async (

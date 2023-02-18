@@ -1,9 +1,10 @@
-import * as users from './users/userData';
-import * as clubs from './clubs/clubData';
-import type { PrismaClient, Prisma, PrismaPromise } from '@prisma/client';
-import prisma from './prisma';
+import users from './userData';
+import clubs from './clubData';
+import books from './bookData';
+import conversations from './conversationData';
 
 export default {
     users,
-    clubs
+    clubs,
+    conversations
 }

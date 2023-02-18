@@ -1,5 +1,5 @@
 import type { Prisma, User, UserProfile } from "@prisma/client"
-import prisma from "../prisma"
+import prisma from "./prisma"
   
 // -- CREATE --
 async function addNewUser(
@@ -38,11 +38,11 @@ async function getUserById(
     return user;
 }
 
-async function getManyUsersById(ids: string): Promise<User[]> {
+async function getManyUsersById(...ids: string[]): Promise<User[]> {
     const users = await prisma.user.findMany({ 
         where: {
             id: {  
-                in: [ ...ids ],
+                in: ids,
             }
         }
     });
